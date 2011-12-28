@@ -22,6 +22,11 @@ Add this to your 'conf/local.php'::
 	$conf['auth']['django']['dsn'] = 'pgsql:host=localhost;dbname=imaginationforpeople';
 
 
+On the django side, you user must belong to the admin group defined in your local.php if you want it to be admin::
+
+        $conf['superuser'] = '@wikiadmin';
+
+
 Credits
 -------
 

@@ -81,12 +81,15 @@ class auth_django extends auth_basic {
              $useremail = $row['email'];
 
              // okay we're logged in - set the globals
-             $groups = $this->_getUserGroups($username);
+             
+             if ( $groups = $this->_getUserGroups($username) )
+                 array_push($groups, 'user');
+             else
+                 $groups[0] = 'user';
 
              $USERINFO['name'] = $userfullname;
              $USERINFO['pass'] = '';
              $USERINFO['mail'] = $useremail;
-             $groups[0] = 'user';
              $USERINFO['grps'] = $groups;
 
              $_SERVER['REMOTE_USER'] = $username;
@@ -95,22 +98,19 @@ class auth_django extends auth_basic {
 
              return true;
         }
-        
-        print "ratai";
 
         return false;
     }
 
     function _getUserGroups($user) {
-
         $sth = $this->dbh->query('SELECT auth_group.name FROM auth_user, auth_user_groups, auth_group where auth_user.username=' . $this->dbh->quote($user) . ' AND auth_user.id = auth_user_groups.user_id AND auth_user_groups.group_id = auth_group.id;');
         $a = 0;
         
         while($row = $sth->fetch(PDO::FETCH_ASSOC)) {
-            $groups[$a] = $row[0];
+            $groups[$a] = $row['name'];
             $a++;
         };
-
+        
         return $groups;
     }
 
